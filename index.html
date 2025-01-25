@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>照片EXIF信息查看器</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- 只需要EXIF.js库 -->
+    <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
+    <!-- 设置安全密钥 -->
+    <script type="text/javascript">
+        window._AMapSecurityConfig = {
+            securityJsCode: "0a8ecfd103785834c7c60994fb229f13"
+        };
+    </script>
+    <!-- 添加高德地图JS API -->
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=9a3c904eb45196ba7c7cd8293b2d7270&plugin=AMap.Geocoder"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>照片EXIF信息查看器</h1>
+        
+        <div class="upload-area" id="dropZone">
+            <input type="file" id="imageInput" accept="image/*" class="file-input">
+            <div class="upload-text">
+                <svg class="upload-icon" viewBox="0 0 24 24" width="48" height="48">
+                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                </svg>
+                <p>点击或拖拽照片到这里</p>
+            </div>
+        </div>
+
+        <div class="preview-container">
+            <img id="preview" class="hidden">
+            <div id="exifInfo" class="exif-info"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 

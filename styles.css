@@ -1,0 +1,96 @@
+:root {
+    --primary-color: #007AFF;
+    --background-color: #F5F5F7;
+    --text-color: #1D1D1F;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.5;
+}
+
+.container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 40px;
+    font-weight: 600;
+}
+
+.upload-area {
+    background: white;
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    position: relative;
+    border: 2px dashed #E5E5E5;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.upload-area:hover {
+    border-color: var(--primary-color);
+}
+
+.file-input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.upload-text {
+    color: #86868B;
+}
+
+.upload-icon {
+    fill: var(--primary-color);
+    margin-bottom: 16px;
+}
+
+.preview-container {
+    margin-top: 40px;
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    display: none;
+}
+
+.preview-container.active {
+    display: block;
+}
+
+#preview {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.exif-info {
+    background: var(--background-color);
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.exif-info p {
+    margin: 8px 0;
+}
+
+.hidden {
+    display: none;
+} 
