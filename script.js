@@ -57,11 +57,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
             let exifHTML = '<h3>照片信息</h3>';
 
+            // 添加浏览器信息提示
+            const isWechat = /MicroMessenger/i.test(navigator.userAgent);
+            if (isWechat) {
+                exifHTML += '<p style="color: #ff6b6b;">注意：微信浏览器可能无法获取完整的GPS信息，建议使用系统浏览器访问。</p>';
+            }
+
             if (dateTime) {
-                // 格式化时间显示
                 const formattedDate = formatDateTime(dateTime);
                 exifHTML += `<p>拍摄时间：${formattedDate}</p>`;
             }
+
+            // 增加GPS信息调试输出
+            console.log('GPS信息：', {
+                latitude,
+                longitude,
+                latRef,
+                longRef
+            });
 
             if (latitude && longitude) {
                 const lat = convertDMSToDD(latitude, latRef);
@@ -70,7 +83,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 exifHTML += `<p>拍摄地点：等待获取中...</p>`;
                 exifInfo.innerHTML = exifHTML;
                 
-                // 调用高德地图API获取地址
                 getAddress(lng, lat).then(result => {
                     if (result) {
                         const newExifHTML = exifInfo.innerHTML.replace('等待获取中...', result.address);
@@ -80,6 +92,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         exifInfo.innerHTML = newExifHTML;
                     }
                 });
+            } else {
+                exifHTML += '<p>未找到GPS信息</p>';
             }
 
             if (!dateTime && !latitude) {
@@ -127,15 +141,19 @@ document.addEventListener('DOMContentLoaded', function() {
         return `${year}年${month}月${day}日 ${period}${hour12}点${minute}分${second}秒`;
     }
 
-    // 修改获取地址的函数 - 本地开发版本
+    // 修改获取地址的函数
     async function getAddress(lng, lat) {
         try {
             console.log('发送给高德的坐标：', `经度=${lng}, 纬度=${lat}`);
             
-            // 创建地理编码器实例
+            // 检查坐标是否有效
+            if (!isValidCoordinate(lng, lat)) {
+                console.error('无效的坐标值');
+                return null;
+            }
+            
             const geocoder = new AMap.Geocoder();
             
-            // 使用Promise包装高德地图的回调
             const result = await new Promise((resolve) => {
                 geocoder.getAddress([lng, lat], (status, result) => {
                     console.log('高德返回状态：', status);
@@ -146,6 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             address: result.regeocode.formattedAddress
                         });
                     } else {
+                        console.error('地理编码失败：', status, result);
                         resolve(null);
                     }
                 });
@@ -156,5 +175,12 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('获取地址失败，详细错误：', error);
             return null;
         }
+    }
+
+    // 添加坐标验证函数
+    function isValidCoordinate(lng, lat) {
+        return !isNaN(lng) && !isNaN(lat) && 
+               lng >= -180 && lng <= 180 && 
+               lat >= -90 && lat <= 90;
     }
 }); 

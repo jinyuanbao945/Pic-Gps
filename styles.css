@@ -93,4 +93,42 @@ h1 {
 
 .hidden {
     display: none;
+}
+
+/* 添加移动端适配 */
+@media screen and (max-width: 768px) {
+    .container {
+        margin: 20px auto;
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .upload-area {
+        padding: 20px;
+    }
+
+    .upload-icon {
+        width: 36px;
+        height: 36px;
+    }
+
+    .exif-info {
+        padding: 15px;
+        font-size: 14px;
+    }
+}
+
+/* 添加加载状态样式 */
+.loading {
+    color: #007AFF;
+    font-style: italic;
+}
+
+/* 添加错误状态样式 */
+.error {
+    color: #ff6b6b;
 } 
