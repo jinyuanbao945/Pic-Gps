@@ -38,12 +38,36 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        // 检查是否是移动端设备
+        const isMobile = /Mobile|Android|iPhone/i.test(navigator.userAgent);
+        
         // 显示图片预览
         const reader = new FileReader();
         reader.onload = function(e) {
             preview.src = e.target.result;
             preview.classList.remove('hidden');
             previewContainer.classList.add('active');
+            
+            // 如果是移动端，显示提示信息
+            if (isMobile) {
+                exifInfo.innerHTML = `
+                    <h3>照片信息</h3>
+                    <div style="background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                        <div style="font-weight: 600; margin-bottom: 8px;">
+                            <svg style="width: 20px; height: 20px; fill: #856404; vertical-align: middle; margin-right: 8px;" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                            </svg>
+                            设备兼容性提示
+                        </div>
+                        <p>由于移动端浏览器的安全限制，可能无法读取照片的完整信息（尤其是GPS位置信息）。</p>
+                        <p style="margin-top: 8px;">建议使用方式：</p>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            <li>使用电脑浏览器访问本网站</li>
+                            <li>或等待我们的APP版本发布</li>
+                        </ul>
+                    </div>
+                `;
+            }
         }
         reader.readAsDataURL(file);
 
