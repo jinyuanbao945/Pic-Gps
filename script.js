@@ -49,58 +49,60 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // 读取EXIF信息
         EXIF.getData(file, function() {
-            const dateTime = EXIF.getTag(this, "DateTime");
-            const latitude = EXIF.getTag(this, "GPSLatitude");
-            const longitude = EXIF.getTag(this, "GPSLongitude");
-            const latRef = EXIF.getTag(this, "GPSLatitudeRef");
-            const longRef = EXIF.getTag(this, "GPSLongitudeRef");
+            try {
+                const dateTime = EXIF.getTag(this, "DateTime");
+                const latitude = EXIF.getTag(this, "GPSLatitude");
+                const longitude = EXIF.getTag(this, "GPSLongitude");
+                const latRef = EXIF.getTag(this, "GPSLatitudeRef");
+                const longRef = EXIF.getTag(this, "GPSLongitudeRef");
 
-            let exifHTML = '<h3>照片信息</h3>';
-
-            // 添加浏览器信息提示
-            const isWechat = /MicroMessenger/i.test(navigator.userAgent);
-            if (isWechat) {
-                exifHTML += '<p style="color: #ff6b6b;">注意：微信浏览器可能无法获取完整的GPS信息，建议使用系统浏览器访问。</p>';
-            }
-
-            if (dateTime) {
-                const formattedDate = formatDateTime(dateTime);
-                exifHTML += `<p>拍摄时间：${formattedDate}</p>`;
-            }
-
-            // 增加GPS信息调试输出
-            console.log('GPS信息：', {
-                latitude,
-                longitude,
-                latRef,
-                longRef
-            });
-
-            if (latitude && longitude) {
-                const lat = convertDMSToDD(latitude, latRef);
-                const lng = convertDMSToDD(longitude, longRef);
-                exifHTML += `<p>拍摄地点坐标：${lat.toFixed(6)}°, ${lng.toFixed(6)}°</p>`;
-                exifHTML += `<p>拍摄地点：等待获取中...</p>`;
-                exifInfo.innerHTML = exifHTML;
-                
-                getAddress(lng, lat).then(result => {
-                    if (result) {
-                        const newExifHTML = exifInfo.innerHTML.replace('等待获取中...', result.address);
-                        exifInfo.innerHTML = newExifHTML;
-                    } else {
-                        const newExifHTML = exifInfo.innerHTML.replace('等待获取中...', '地址获取失败');
-                        exifInfo.innerHTML = newExifHTML;
-                    }
+                console.log('EXIF数据：', {
+                    dateTime,
+                    latitude,
+                    longitude,
+                    latRef,
+                    longRef
                 });
-            } else {
-                exifHTML += '<p>未找到GPS信息</p>';
-            }
 
-            if (!dateTime && !latitude) {
-                exifHTML += '<p>未找到EXIF信息</p>';
-            }
+                let exifHTML = '<h3>照片信息</h3>';
 
-            exifInfo.innerHTML = exifHTML;
+                // 添加浏览器信息提示
+                if (/MicroMessenger/i.test(navigator.userAgent)) {
+                    exifHTML += '<p style="color: #ff6b6b;">注意：微信浏览器可能无法获取完整的GPS信息，建议使用系统浏览器访问。</p>';
+                }
+
+                if (dateTime) {
+                    const formattedDate = formatDateTime(dateTime);
+                    exifHTML += `<p>拍摄时间：${formattedDate}</p>`;
+                }
+
+                if (latitude && longitude) {
+                    const lat = convertDMSToDD(latitude, latRef);
+                    const lng = convertDMSToDD(longitude, longRef);
+                    exifHTML += `<p>拍摄地点坐标：${lat.toFixed(6)}°, ${lng.toFixed(6)}°</p>`;
+                    exifHTML += `<p>拍摄地点：等待获取中...</p>`;
+                    exifInfo.innerHTML = exifHTML;
+                    
+                    getAddress(lng, lat).then(result => {
+                        if (result) {
+                            exifInfo.innerHTML = exifInfo.innerHTML.replace('等待获取中...', result.address);
+                        } else {
+                            exifInfo.innerHTML = exifInfo.innerHTML.replace('等待获取中...', '地址获取失败');
+                        }
+                    });
+                } else {
+                    exifHTML += '<p>未找到GPS信息</p>';
+                }
+
+                if (!dateTime && !latitude) {
+                    exifHTML += '<p>未找到EXIF信息</p>';
+                }
+
+                exifInfo.innerHTML = exifHTML;
+            } catch (error) {
+                console.error('EXIF数据处理错误：', error);
+                exifInfo.innerHTML = '<h3>照片信息</h3><p>读取照片信息时发生错误</p>';
+            }
         });
     }
 
